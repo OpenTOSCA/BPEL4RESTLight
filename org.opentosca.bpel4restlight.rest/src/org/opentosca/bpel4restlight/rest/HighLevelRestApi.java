@@ -23,8 +23,7 @@ public class HighLevelRestApi {
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	@SuppressWarnings("deprecation")
-	public static HttpResponseMessage Put(String uri, String requestPayload,
-			String acceptHeaderValue) {
+	public static HttpResponseMessage Put(String uri, String requestPayload, String acceptHeaderValue) {
 
 		PutMethod method = new PutMethod(uri);
 		// requestPayload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -33,8 +32,7 @@ public class HighLevelRestApi {
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
 		method.setRequestBody(requestPayload);
 
-		HttpResponseMessage responseMessage = LowLevelRestApi
-				.executeHttpMethod(method);
+		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 
 		// kill <?xml... in front of response
 		HighLevelRestApi.cleanResponseBody(responseMessage);
@@ -52,10 +50,8 @@ public class HighLevelRestApi {
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	@SuppressWarnings("deprecation")
-	public static HttpResponseMessage Post(String uri, String requestPayload,
-			String acceptHeaderValue) {
+	public static HttpResponseMessage Post(String uri, String requestPayload, String acceptHeaderValue) {
 
-		
 		PostMethod method = null;
 		if (uri.contains("?")) {
 			System.out.println("Found query trying to split");
@@ -65,12 +61,12 @@ public class HighLevelRestApi {
 			method = new PostMethod(split[0]);
 			method.setQueryString(HighLevelRestApi.createNameValuePairArrayFromQuery(split[1]));
 		} else {
-			method = new PostMethod(uri);;
+			method = new PostMethod(uri);
+			;
 		}
 		method.setRequestBody(requestPayload);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
-		HttpResponseMessage responseMessage = LowLevelRestApi
-				.executeHttpMethod(method);
+		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
 	}
@@ -97,8 +93,7 @@ public class HighLevelRestApi {
 			method = new GetMethod(uri);
 		}
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
-		HttpResponseMessage responseMessage = LowLevelRestApi
-				.executeHttpMethod(method);
+		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
 	}
@@ -114,8 +109,7 @@ public class HighLevelRestApi {
 			System.out.println("Splitting query pair: " + pair);
 			String[] keyValue = pair.split("=");
 			NameValuePair nameValuePair = new NameValuePair();
-			System.out
-					.println("Key: " + keyValue[0] + " Value: " + keyValue[1]);
+			System.out.println("Key: " + keyValue[0] + " Value: " + keyValue[1]);
 			nameValuePair.setName(keyValue[0]);
 			nameValuePair.setValue(keyValue[1]);
 			nameValuePairArray[count] = nameValuePair;
@@ -131,13 +125,11 @@ public class HighLevelRestApi {
 	 *            Resource URI
 	 * @return ResponseCode of HTTP Interaction
 	 */
-	public static HttpResponseMessage Delete(String uri,
-			String acceptHeaderValue) {
+	public static HttpResponseMessage Delete(String uri, String acceptHeaderValue) {
 
 		DeleteMethod method = new DeleteMethod(uri);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
-		HttpResponseMessage responseMessage = LowLevelRestApi
-				.executeHttpMethod(method);
+		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
 	}
@@ -153,11 +145,10 @@ public class HighLevelRestApi {
 	private static void cleanResponseBody(HttpResponseMessage responseMessage) {
 		System.out.println("ResponseBody: \n");
 		System.out.println(responseMessage.getResponseBody());
-		String temp = responseMessage
-				.getResponseBody()
-				.replace(
-						"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
-						"");
-		responseMessage.setResponseBody(temp);
+		if (responseMessage.getResponseBody() != null) {  
+			String temp = responseMessage.getResponseBody()
+					.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "");
+			responseMessage.setResponseBody(temp);
+		}
 	}
 }

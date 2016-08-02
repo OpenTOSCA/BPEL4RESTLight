@@ -1,0 +1,3 @@
+Install the BPEL4REST extension in the WSO2 BPS by copying the file "bpel4restlight1.1.1.jar" to <BPS-directory>\repository\components\lib.
+
+Unter <bps-root>/repository/components/lib und <bps-root>/repository/components/dropins jeweils die jar (orig. name und das mit "_1.0.0") löschen bzw. ersetzen, da der bps nachdem er die jar in eine bundle (des mit 1.0.0 unter dropins) umgebaut hat, dieser nur noch das verwendet.
