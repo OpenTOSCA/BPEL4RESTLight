@@ -41,9 +41,7 @@ public class DomXmlConverter {
 	 * @return String representation of the passed node
 	 */
 	public static String nodeToString(Node node, String wrapperElement) {
-		try {
-			System.out.println("\n\n\n");
-			System.out.println("check if node got a namespace: " + node.getNamespaceURI());
+		try {					
 			if (wrapperElement != null) {
 				// this hack is need as ODE wrapps simpletypes in such elements
 				return node.getTextContent();

@@ -23,12 +23,14 @@ public class HighLevelRestApi {
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	@SuppressWarnings("deprecation")
-	public static HttpResponseMessage Put(String uri, String requestPayload, String acceptHeaderValue) {
+	public static HttpResponseMessage Put(String uri, String requestPayload, String acceptHeaderValue,
+			String contentType) {
 
 		PutMethod method = new PutMethod(uri);
 		// requestPayload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 		// requestPayload;
-
+		
+		HighLevelRestApi.setContentTypeHeader(method, contentType);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
 		method.setRequestBody(requestPayload);
 
@@ -50,7 +52,8 @@ public class HighLevelRestApi {
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	@SuppressWarnings("deprecation")
-	public static HttpResponseMessage Post(String uri, String requestPayload, String acceptHeaderValue) {
+	public static HttpResponseMessage Post(String uri, String requestPayload, String acceptHeaderValue,
+			String contentType) {
 
 		PostMethod method = null;
 		if (uri.contains("?")) {
@@ -65,6 +68,7 @@ public class HighLevelRestApi {
 			;
 		}
 		method.setRequestBody(requestPayload);
+		HighLevelRestApi.setContentTypeHeader(method, contentType);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
 		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
@@ -78,7 +82,7 @@ public class HighLevelRestApi {
 	 *            Resource URI
 	 * @return Content represented by the Resource URI
 	 */
-	public static HttpResponseMessage Get(String uri, String acceptHeaderValue) {
+	public static HttpResponseMessage Get(String uri, String acceptHeaderValue, String contentType) {
 		System.out.println("Setting URI to: \n");
 		System.out.println(uri);
 		GetMethod method = null;
@@ -92,6 +96,7 @@ public class HighLevelRestApi {
 		} else {
 			method = new GetMethod(uri);
 		}
+		HighLevelRestApi.setContentTypeHeader(method, contentType);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
 		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
@@ -125,13 +130,22 @@ public class HighLevelRestApi {
 	 *            Resource URI
 	 * @return ResponseCode of HTTP Interaction
 	 */
-	public static HttpResponseMessage Delete(String uri, String acceptHeaderValue) {
+	public static HttpResponseMessage Delete(String uri, String acceptHeaderValue, String contentType) {
 
 		DeleteMethod method = new DeleteMethod(uri);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
+		HighLevelRestApi.setContentTypeHeader(method, contentType);
 		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
+	}
+
+	private static void setContentTypeHeader(HttpMethodBase method, String value) {		
+		if (value != null  && !value.equals("")) {
+			method.setRequestHeader("Content-Type", value);
+		} else {
+			method.setRequestHeader("Content-Type", "application/xml");
+		}		
 	}
 
 	private static void setAcceptHeader(HttpMethodBase method, String value) {
@@ -139,13 +153,13 @@ public class HighLevelRestApi {
 			method.setRequestHeader("Accept", value);
 		} else {
 			method.setRequestHeader("Accept", "application/xml");
-		}
+		}		
 	}
 
 	private static void cleanResponseBody(HttpResponseMessage responseMessage) {
 		System.out.println("ResponseBody: \n");
 		System.out.println(responseMessage.getResponseBody());
-		if (responseMessage.getResponseBody() != null) {  
+		if (responseMessage.getResponseBody() != null) {
 			String temp = responseMessage.getResponseBody()
 					.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "");
 			responseMessage.setResponseBody(temp);

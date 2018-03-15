@@ -2,6 +2,7 @@ package de.unistuttgart.iaas.bpel.util;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,6 +26,8 @@ import org.xml.sax.SAXException;
  */
 public class BpelUtil {
 	
+	private static Logger log = Logger.getLogger(BpelUtil.class.getName());
+	
 	/**
 	 * This function writes a passed content to a specified processVariable
 	 * (referenced by name). The content will be converted into its
@@ -37,15 +40,15 @@ public class BpelUtil {
 	 * @param processVariableName Variable whose content has to be overwritten
 	 * @throws FaultException
 	 */
-	public static void writeContentToBPELVariable(ExtensionContext context, Object content, String processVariableName, String wrapper) throws FaultException {
-		// check the node
-		System.out.println("The content object: " + content + "\n");
+	public static void writeContentToBPELVariable(ExtensionContext context, Object content, String processVariableName, String wrapper) throws FaultException {		
+		System.out.println("Writing to BPELVariable: " + processVariableName  + "\n");
+		System.out.println("Content: " + content  + "\n");
+		// check the node		
 		// small hack for test
-		Node hackNode = null;
-		System.out.println("Trying to parse string to dom: " + ((String) content) + "\n");
+		Node hackNode = null;		
 		
 		if (wrapper != null) {
-			// a hack for simple type wrapper
+			// a hack for ode's wrapping
 			content = "<" + wrapper + ">" + (String) content + "</" + wrapper + ">";
 		}
 		try {
@@ -62,11 +65,11 @@ public class BpelUtil {
 		}
 		
 		Variable bpelVariable = context.getVisibleVariables().get(processVariableName);
-		if (hackNode == null) {
-			System.out.println("hackNode is null! \n");
+		if (hackNode == null) {			
+			log.severe("hackNode is null! \n");
 		}
 		if (bpelVariable == null) {
-			System.out.println("bpelVariable is null! \n");
+			log.severe("bpelVariable is null! \n");
 		}
 		try {
 			// replaced responseAsNode to hackNode

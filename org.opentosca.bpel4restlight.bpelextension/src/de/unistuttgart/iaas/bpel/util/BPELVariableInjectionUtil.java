@@ -3,6 +3,7 @@ package de.unistuttgart.iaas.bpel.util;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,6 +30,8 @@ import org.xml.sax.SAXException;
  *         This class provides some methods for BPEL-Variable-Injection
  */
 public class BPELVariableInjectionUtil {
+	
+	private static Logger log = Logger.getLogger(BPELVariableInjectionUtil.class.getName());
 	
 	/**
 	 * This method serializes a Node into a String
@@ -100,15 +103,15 @@ public class BPELVariableInjectionUtil {
 					// Extract content of referenced variable
 					Node variableContent = context.readVariable(variableName);
 					
-					System.out.println("Replacing variable " + variableName + "(" + variableContent.getNamespaceURI() + " " + variableContent.getLocalName() + ") with content: \n");
-					System.out.println("NodeValue(): " + variableContent.getNodeValue() + "\n");
-					System.out.println("TextContent(): " + variableContent.getTextContent());
-					System.out.println("The full bpel script (before change) as string: \n" + BPELCodeAsString + "\n");
+					log.info("Replacing variable " + variableName + "(" + variableContent.getNamespaceURI() + " " + variableContent.getLocalName() + ") with content: \n");
+					log.info("NodeValue(): " + variableContent.getNodeValue() + "\n");
+					log.info("TextContent(): " + variableContent.getTextContent());
+					log.info("The full bpel script (before change) as string: \n" + BPELCodeAsString + "\n");
 					
 					// Replace variable-reference with corresponding content
 					BPELCodeAsString = BPELCodeAsString.replace("$bpelvar[" + variableName + "]", nodeToString(variableContent));
 					
-					System.out.println("The full bpel script as string: \n" + BPELCodeAsString + "\n");
+					log.info("The full bpel script as string: \n" + BPELCodeAsString + "\n");
 					startIndex = BPELCodeAsString.indexOf("$bpelvar[");
 				}
 				
